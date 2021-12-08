@@ -5,14 +5,14 @@ import random
 
 app = Flask(__name__)
 
-# client = MongoClient('mongodb://test:test@52.79.33.194', 27017)
-# db = client.dbsparta
+client = MongoClient('mongodb://test:test@52.79.33.194', 27017)
+db = client.dbsparta
 
-client = MongoClient("localhost", 27017)
-db = client.dbMovie
+# client = MongoClient("localhost", 27017)
+# db = client.dbMovie
 
 movieList = db.tp7
-review = db.review
+comment = db.comment
 
 
 app.secret_key = "ABCDEFG"
@@ -97,29 +97,29 @@ def logout():
     return redirect(url_for("init"))
 
 
-@app.route("/reviews", methods=["POST"])  # 해당 영화 조회를 하기위해 post로 바꿨습니다.
-def get_reviews():
+@app.route("/comments", methods=["POST"])  # 해당 영화 조회를 하기위해 post로 바꿨습니다.
+def get_comments():
     title_receive = request.form["title_give"]
-    reviews = list(
-        db.review.find({"title": title_receive}, {"_id": False})
-    )  # title로 review 조회
-    return jsonify({"target_reviews": reviews})
+    comments = list(
+        db.comment.find({"title": title_receive}, {"_id": False})
+    )  # title로 comment 조회
+    return jsonify({"target_comments": comments})
 
 
-# update reviews
-@app.route("/reviews/update", methods=["POST"])
-def update_reviews():
+# update comments
+@app.route("/comments/update", methods=["POST"])
+def update_comments():
 
     title_receive = request.form["title_give"]
     ID_receive = request.form["ID_give"]
-    review_receive = request.form["review_give"]
+    comment_receive = request.form["comment_give"]
 
     doc = {
-        "movie": title_receive,
+        "title": title_receive,
         "ID": ID_receive,
-        "review": review_receive,
-    }  # title, id, review로 저장
-    db.review.insert_one(doc)
+        "comment": comment_receive,
+    }  # title, id, comment로 저장
+    db.comment.insert_one(doc)
     return jsonify({"msg": "등록 완료"})
 
 
